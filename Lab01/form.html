@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Реєстрація на курс</title>
+    </head>
+    <body>
+        <h1>Реєстрація на курс</h1>
+        <h2>Введіть ваші дані:</h2>
+        <form action="#" method="post">
+        <fieldset>
+            <legend>Особисті дані</legend>
+            <label for="first-name">Ім'я:</label>
+            <input type="text" id="first-name" required>
+            <br>
+            <label for="last-name">Прізвище:</label>
+            <input type="text" id="last-name" required>
+            <br>
+            <label for="birth-date">Дата народження:</label>
+            <input type="date" id="birth-date">
+            <br>
+        </fieldset>
+        <br>
+        <fieldset>
+            <legend>Email та пароль</legend>
+            <label for="email">Email:</label>
+            <input type="email" id="email" required> 
+            <br>
+            <label for="password">Пароль(мінімум 8 символів):</label>
+            <input type="password" id="password" minlength="8" required>
+            <br>
+            <label for="password-verification">Підтвердження паролю:</label>
+            <input type="password" id="password-verification" minlength="8" required>
+            <br>
+        </fieldset>
+        <br>
+        <fieldset>
+            <legend>Спеціальність</legend>
+             <label for="speciality">Спеціальність:</label>
+            <select id="speciality" required>
+                <option value="">Оберіть спеціальність</option>
+                <option value="cs">Комп'ютерні науки</option>
+                <option value="math">Прикладна математика</option>
+                <option value="ipz">Інженерія програмного забезпечення</option>
+            </select>
+        </fieldset>
+        <br>
+        <fieldset>
+            <legend>Підтвердження</legend>
+            <label for="rules">Я погоджуюсь з правилами</label>
+            <input type="checkbox" id="rules" required>
+        </fieldset>
+        <br>
+        <button type="submit">Зареєструватись</button>
+        </form>
+    </body>
+</html>
