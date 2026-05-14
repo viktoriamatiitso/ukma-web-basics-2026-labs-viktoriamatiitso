@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>BuyList</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <main class="container">
+        <h1>Кошик товарів</h1>
+        <section class="left-column">
+            <div class="add-item section">
+                <input type="text" placeholder="Назва товару" aria-label="Назва товару">
+                <button class="add-item" aria-label="Додати товар" data-tooltip="Додати товар у список">Додати товар</button>
+            </div>
+            <div class="items-list">
+                <div class="item-row">
+                    <span class="item-name">Помідори</span>
+                    <span class="item-amount">2</span>
+                    <button class="not-bought"aria-label="Не куплено" data-tooltip="Відмітити як куплене">Не куплено</button>
+                </div>
+                <div class="item-row">
+                    <span class="item-name">Печиво</span>
+                    <div class="buttons">
+                        <button class="btn-minus" aria-label="Зменшити кількість" data-tooltip="Зменшити кількість">-</button>
+                        <span class="item-amount">2</span>
+                        <button class="btn-plus" aria-label="Збільшити кількість" data-tooltip="Збільшити кількість">+</button>
+                        <button class="bought" aria-label="Куплено" data-tooltip="Повернути в список">Куплено</button>
+                        <button class="remove-item" aria-label="Видалити товар" data-tooltip="Видалити товар">x</button>
+                    </div>
+                </div>
+                <div class="item-row">
+                    <input type="text" class="edit-item" value="Сир" aria-label="Редагувати назву товару">
+                    <div class="buttons">
+                        <button class="btn-minus" aria-label="Зменшити кількість" data-tooltip="Зменшити кількість">-</button>
+                        <span class="item-amount">2</span>
+                        <button class="btn-plus" aria-label="Збільшити кількість" data-tooltip="Збільшити кількість">+</button>
+                        <button class="bought" aria-label="Куплено" data-tooltip="Повернути в список">Куплено</button>
+                        <button class="remove-item" aria-label="Видалити товар" data-tooltip="Видалити товар">x</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <aside class="right-column">
+            <h2>Залишилось</h2>
+            <div class="leftovers">
+                <span class="leftovers">Печиво</span>
+                <span class="letovers-amount">2</span>
+                <span class="leftovers">Сир</span>
+                <span class="letovers-amount">1</span>
+            </div>
+            <hr>
+            <h2>Куплено</h2>
+            <div class="bought-items">
+                <span class="bought-items">Помідори</span>
+                <span class="bought-items-amount">2</span>
+            </div>
+        </aside>
+    </main>
+
+    <div class="author-badge">
+        <div class="badge-front">BuyList</div>
+        <div class="badge-hidden">Виконала: Матійцьо Вікторія</div>
+    </div>
+</body>
+</html>
