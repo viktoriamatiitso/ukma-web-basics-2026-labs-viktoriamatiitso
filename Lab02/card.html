@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Картка — практична CSS</title>
+  <link rel="stylesheet" href="card.css">
+</head>
+<body>
+
+  <!--
+    Варіант контенту визначається викладачем.
+    Структура (теги, класи) однакова для всіх варіантів —
+    змінюється тільки контент усередині.
+
+    Варіант A — Картка ТОВАРУ
+    Варіант B — Картка ПРОФІЛЮ
+    Варіант C — Картка СТАТТІ
+    Варіант D — Картка КУРСУ
+  -->
+
+  <article class="card">
+    <img class="card-image"
+         src="./photo.jpg"
+         alt="Зображення для картки">
+
+    <h3 class="card-title">Audi RS7</h3>
+
+    <p class="card-meta">
+        Рік випуску: 2021
+    </p>
+
+    <p class="card-description">
+        Audi RS 7 — це поєднання преміального дизайну, потужного двигуна та сучасних технологій.
+    </p>
+
+    <p class="card-price">150 000$</p>
+
+    <button class="card-action" type="button">
+      Дізнатися більше
+    </button>
+  </article>
+
+</body>
+</html>
