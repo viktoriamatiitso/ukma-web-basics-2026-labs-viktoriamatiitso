@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Дашборд продажів</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+        <style>
+            body{
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #f4f7f6;
+                margin: 0;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .container{
+                background-color: white;
+                border: 1px solid #e0e0e0;
+                border-radius: 12px;
+                padding: 24px;
+                max-width: 1000px;
+                width: 100%;
+            }
+            .header{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 2px solid #dedede;
+                padding-bottom: 16px;
+                margin-bottom: 24px;
+            }
+            .categorySelect {
+                padding: 10px 16px;
+                font-size: 16px;
+                border: 1px solid #e8e7e7;
+                border-radius: 8px;
+                background-color: #1f56e2;
+                color: white;
+                cursor: pointer;
+            }
+            .option{
+                background-color: white;
+                color:black;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1 class="title">Аналітика продажів магазину (тис. грн)</h1>
+                <select id="categorySelect" class="categorySelect">
+                    <option class="option" value="electronics">Електроніка</option>
+                    <option class="option" value="clothes">Одяг</option>
+                    <option class="option" value="books">Книги</option>
+                </select>
+            </div>
+            <div class="chartsGrid">
+                <div class="chartWrapper">
+                    <canvas id="barChart"></canvas>
+                </div>
+                <div class="chartWrapper">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <script>
+            const data ={
+                electronics:{
+                    label: "Електроніка",
+                    barCurrentYear: [250, 170, 200, 140, 160, 210, 190, 190, 250, 310, 420, 600],
+                    line2024: [200, 100, 220, 110, 140, 180, 250, 170, 220, 260, 350, 410],
+                    line2025: [250, 170, 200, 140, 160, 210, 190, 190, 250, 310, 420, 600]
+                 },
+                clothes: {
+                    label: "Одяг",
+                    barCurrentYear: [80, 70, 110, 130, 150, 180, 140, 120, 160, 200, 250, 300],
+                    line2024: [75, 60, 95, 110, 130, 160, 120, 100, 140, 170, 210, 260],
+                    line2025: [80, 70, 110, 130, 150, 180, 140, 120, 160, 200, 250, 300]
+                },
+                books: {
+                    label: "Книги",
+                    barCurrentYear: [40, 35, 45, 40, 30, 25, 30, 45, 60, 55, 70, 90],
+                    line2024: [35, 30, 40, 35, 25, 20, 25, 35, 50, 45, 60, 75],
+                    line2025: [40, 35, 45, 40, 30, 25, 30, 45, 60, 55, 70, 90]
+                }
+            };
+                
+            const months = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень",
+                "Жовтень", "Листопад", "Грудень"];
+
+            const ctxBar = document.getElementById("barChart");
+            const ctxLine = document.getElementById("lineChart");
+
+            const barChart = new Chart(ctxBar, {
+                type: "bar",
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: `Продажі у 2025: ${data.electronics.label}`,
+                        data: data.electronics.barCurrentYear
+                    }]
+                },
+                options: {
+                    plugins: {
+                        title: { 
+                            display: true, 
+                            text: "Продажі по місяцях (Стовпчаста діаграма)",
+                            font: {
+                                size: 24
+                            }
+                        }      
+                    },
+                    layout: {
+                        padding: 20
+                    }
+                }
+            });
+
+            const lineChart = new Chart(ctxLine, {
+                type: "line",
+                data: {
+                    labels: months,
+                    datasets: [
+                        {
+                            label: "2024 рік",
+                            data: data.electronics.line2024,
+                            tension: 0.4
+                        },
+                        {
+                            label: "2025 рік",
+                            data: data.electronics.line2025,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    plugins: {
+                        title: { 
+                            display: true, 
+                            text: "Порівняння двох років (Лінійний графік)",
+                            font: {
+                                size: 24
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: 20
+                    }
+                }
+            });
+
+            const categorySelect = document.getElementById("categorySelect");
+
+            categorySelect.addEventListener("change", function() {
+                const selectedCategory = this.value; 
+                const newData = data[selectedCategory];
+
+                barChart.data.datasets[0].label = `Продажі у 2025: ${newData.label}`;
+                barChart.data.datasets[0].data = newData.barCurrentYear;
+                barChart.update();
+
+                lineChart.data.datasets[0].data = newData.line2024;
+                lineChart.data.datasets[1].data = newData.line2025;
+                lineChart.update();
+
+                console.log(`[Оновлення графіків] Категорію змінено на: ${newData.label}. Дані успішно перемальовано.`);
+            });
+        </script>
+    </body>
+</html>
