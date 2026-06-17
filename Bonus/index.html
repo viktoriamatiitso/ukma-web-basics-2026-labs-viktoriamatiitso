@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Гра П'ятнашки</title>
+    <link rel="stylesheet" href="https://cdn.webdatarocks.com/latest/webdatarocks.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.webdatarocks.com/latest/theme/dark/webdatarocks.css" />
+    <script src="https://cdn.webdatarocks.com/latest/webdatarocks.toolbar.min.js"></script>
+    <script src="https://cdn.webdatarocks.com/latest/webdatarocks.js"></script>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            background-color: #121212;
+            padding-top: 30px;
+        }
+        #dashboard { 
+            margin-bottom: 30px; 
+            color: #ffffff;
+            display: flex; 
+            flex-direction: row; 
+            align-items: center;
+            justify-content: center;
+            gap: 50px;
+            width: 100%;
+            max-width: 1000px;
+        }
+        h1, h2{
+            font-size: 32px;
+        }
+        #container { 
+            width: 100%;            
+            max-width: 1000px;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.074);
+        }
+        .btn {
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .btn:hover {
+            background-color: #005a9e;
+        }
+    </style>
+</head>
+<body>
+    <div id="dashboard">
+        <h1>Кількість ходів: <span id="moves">0</span></h1>
+        <h2>Рекорд: <span id="record">-</span></h2>
+        <button class="btn">Почати нову гру</button>
+    </div>
+    <div id="container"></div>
+    <script>
+        let board = [];
+        let moves = 0;
+
+        let bestRecord = localStorage.getItem("game_record");
+
+        // Ініціалізація та перемішування дошки
+        function initBoard() {
+            board = [];
+            let val = 1;
+            // Створення виграшного стану
+            for (let r = 1; r <= 4; r++) {
+                for (let c = 1; c <= 4; c++) {
+                    if (r === 4 && c === 4) {
+                        board.push({ r: r, c: c, v: null }); 
+                    } else {
+                        board.push({ r: r, c: c, v: val++ });
+                    }
+                }
+            }
+            
+            // Перемішування (щоб гра мала рішення)
+            let emptyR = 4;
+            let emptyC = 4;
+            for (let i = 0; i < 200; i++) {
+                let neighbors = [];
+                if (emptyR > 1){
+                    neighbors.push({r: emptyR - 1, c: emptyC})  // Вгору
+                };
+                if (emptyR < 4){
+                    neighbors.push({r: emptyR + 1, c: emptyC})  // Вниз
+                };
+                if (emptyC > 1){
+                    neighbors.push({r: emptyR, c: emptyC - 1})  // Вліво
+                };
+                if (emptyC < 4){
+                    neighbors.push({r: emptyR, c: emptyC + 1})  // Вправо
+                }
+
+                let move = neighbors[Math.floor(Math.random() * neighbors.length)];
+                let emptyObj = board.find(b => b.r === emptyR && b.c === emptyC);
+                let targetObj = board.find(b => b.r === move.r && b.c === move.c);
+
+                emptyObj.v = targetObj.v;
+                targetObj.v = null;
+                emptyR = move.r;
+                emptyC = move.c;
+            }
+        }
+
+        // Перетворення даних на JSON для WDR
+        function getWDRData() {
+            let data = [
+                { 
+                    "Рядок": { type: "string" }, 
+                    "Колонка": { type: "string" }, 
+                    "Значення": { type: "number" } 
+                }
+            ];
+            board.forEach(b => {
+                data.push({ "Рядок": b.r.toString(), "Колонка": b.c.toString(), "Значення": b.v });
+            });
+            return data;
+        }
+
+        function updateRecordDisplay() {
+            let recordSpan = document.getElementById("record");
+            if (bestRecord) {
+                recordSpan.textContent = bestRecord;
+            } else {
+                recordSpan.textContent = "-";
+            }
+        }
+
+        function startNewGame() {
+            moves = 0;
+            document.getElementById("moves").textContent = moves;
+            initBoard();
+            pivot.updateData({
+                data: getWDRData()
+            });
+        }
+
+        initBoard();
+        updateRecordDisplay();
+
+        const button = document.querySelector(".btn");
+        button.addEventListener("click", startNewGame);
+
+        // Створення таблиці WDR
+        let pivot = new WebDataRocks({
+            container: "#container",
+            toolbar: false,
+            customizeCell: function(cell, data) {
+                if (data.isMeasure) {
+                    if (data.value === null) {
+                        cell.text = ""; 
+                    } 
+                }
+            },
+            report: {
+                dataSource: {
+                    data: getWDRData()
+                },
+                slice: {
+                    rows: [{ uniqueName: "Рядок" }],
+                    columns: [{ uniqueName: "Колонка" }],
+                    measures: [{ uniqueName: "Значення", aggregation: "sum" }]
+                },
+                options: {
+                    grid: {
+                        showTotals: "off",
+                        showGrandTotals: "off",
+                        showHeaders: false,
+                        showFilter: false,
+                    }
+                }
+            }
+        });
+
+        // Обробка кліків
+        pivot.on('cellclick', function(cell) {
+            if(!cell || !cell.rows || !cell.columns){
+                return;
+            }
+
+            let clickedR = parseInt(cell.rows[0].caption);
+            let clickedC = parseInt(cell.columns[0].caption);
+
+            if(isNaN(clickedR) || isNaN(clickedC)){
+               return; 
+            }
+
+            let zeroObj = board.find(b => b.v === null);
+            let clickedObj = board.find(b => b.r === clickedR && b.c === clickedC);
+
+            if(!zeroObj || !clickedObj){
+                return;
+            }
+           
+            let dist = Math.abs(zeroObj.r - clickedR) + Math.abs(zeroObj.c - clickedC);
+
+            if (dist === 1) {
+                let temp = clickedObj.v;
+                clickedObj.v = null;
+                zeroObj.v = temp;
+
+                moves++;
+                document.getElementById("moves").textContent = moves;
+
+                pivot.updateData({
+                    data: getWDRData()
+                });
+
+                setTimeout(checkWin, 150);
+            }
+        });
+
+        // Перевірка перемоги та рекорду
+        function checkWin() {
+            let isWin = true;
+            let expected = 1;
+            for (let r = 1; r <= 4; r++) {
+                for (let c = 1; c <= 4; c++) {
+                    if (r === 4 && c === 4) {
+                        if (board.find(b => b.r === r && b.c === c).v !== null){
+                            isWin = false;
+                        }
+                    } else {
+                        if (board.find(b => b.r === r && b.c === c).v !== expected){
+                            isWin = false;
+                            
+                        }
+                        expected++;
+                    }
+                }
+            }
+            if (isWin) {
+                alert("Гру успішно завершено!\nЗагальна кількість ходів: " + moves);
+
+                if (bestRecord === null || moves < bestRecord) {
+                    bestRecord = moves; 
+                    localStorage.setItem("game_record", bestRecord); 
+                    updateRecordDisplay(); 
+                }
+            }
+        }
+    </script>
+</body>
+</html>
